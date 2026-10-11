@@ -158,7 +158,7 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
             return (
               <g
                 key={d}
-                className="cursor-pointer transition-transform duration-150 hover:scale-125"
+                className="cursor-pointer"
                 onMouseEnter={() => setHoveredDay(d)}
                 onMouseLeave={() => setHoveredDay(null)}
                 onClick={() => onSelectDay && onSelectDay(d)}
@@ -176,7 +176,7 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
                 {/* Day Node Circle */}
                 {isToday ? (
                   <g>
-                    {/* Pulsing Outer Halo */}
+                    {/* Static outer halo: avoids hover/scale feedback flicker */}
                     <circle
                       cx={x}
                       cy={y}
@@ -184,7 +184,7 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
                       fill="none"
                       stroke="#ccff00"
                       strokeWidth="2.5"
-                      className="animate-ping origin-center opacity-75"
+                      className="pointer-events-none opacity-60"
                     />
                     <circle
                       cx={x}
