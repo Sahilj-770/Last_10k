@@ -67,6 +67,7 @@ export interface CalculatedMetrics {
   safeDailyAllowance: number;
   forecastedMonthEndBalance: number;
   totalActiveSubscriptions: number;
+  upcomingSubscriptionCost: number;
   totalSavingsAllocated: number;
   risk: RiskAnalysis;
 }
