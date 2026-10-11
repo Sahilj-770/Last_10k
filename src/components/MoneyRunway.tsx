@@ -94,10 +94,12 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
   const inspectedDay = hoveredDay !== null ? hoveredDay : currentDay;
 
   // Proportional balance simulation for the active inspected day
-  const spentPct = Math.round((metrics.totalPaidExpenses / metrics.startingBudget) * 100);
-  const spendablePct = Math.round((metrics.spendableBalance / metrics.startingBudget) * 100);
-  const committedPct = Math.round((metrics.totalUnpaidCommitments / metrics.startingBudget) * 100);
-  const savingsPct = Math.round((metrics.totalSavingsAllocated / metrics.startingBudget) * 100);
+  // The inner ring represents spendable cash as a share of the original budget.
+  // Clamp the ratio so SVG dash lengths never become negative or exceed a full ring.
+  const spendablePct = metrics.startingBudget > 0
+    ? Math.max(0, Math.min(100, (metrics.spendableBalance / metrics.startingBudget) * 100))
+    : 0;
+  const ringCircumference = 2 * Math.PI * 88;
 
   return (
     <div className="w-full flex flex-col items-center">
@@ -143,7 +145,7 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
           {/* Active Progress Arc (Days 1 to animatedDay) */}
           {daysArray.map((d) => {
             // Angle starting from top (-90 degrees) and sweeping clockwise 360 deg
-            const angleDeg = -90 + (d / totalDays) * 360;
+            const angleDeg = -90 + ((d - 1) / totalDays) * 360;
             const angleRad = (angleDeg * Math.PI) / 180;
             const x = center + radius * Math.cos(angleRad);
             const y = center + radius * Math.sin(angleRad);
@@ -281,8 +283,8 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
               fill="none"
               stroke="#059669"
               strokeWidth="6"
-              strokeDasharray={`${(spendablePct / 100) * 552} 552`}
-              strokeDashoffset="138"
+              strokeDasharray={`${(spendablePct / 100) * ringCircumference} ${ringCircumference}`}
+              strokeDashoffset={ringCircumference * 0.25}
               strokeLinecap="round"
               className="transition-all duration-700 ease-out"
             />
