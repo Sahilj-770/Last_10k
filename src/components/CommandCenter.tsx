@@ -15,6 +15,7 @@ import {
   Clock,
   Sparkles,
   Info,
+  ArrowRight,
 } from 'lucide-react';
 
 interface CommandCenterProps {
@@ -42,254 +43,294 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
   const spentPercent = Math.round((metrics.totalPaidExpenses / metrics.startingBudget) * 100);
   const committedPercent = Math.round((metrics.totalUnpaidCommitments / metrics.startingBudget) * 100);
   const spendablePercent = Math.round((metrics.spendableBalance / metrics.startingBudget) * 100);
+  const savingsPercent = Math.round((metrics.totalSavingsAllocated / metrics.startingBudget) * 100);
 
   const riskBadge = {
     STABLE: {
-      bg: 'bg-[#ccff00]/10 border-[#ccff00]/40 text-[#ccff00]',
-      dot: 'bg-[#ccff00]',
-      label: 'STABLE RUNWAY',
+      bg: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+      dot: 'bg-emerald-500',
+      title: 'Stable Runway',
+      description: 'Your safe daily allowance is healthy and commitments are fully covered.',
     },
     CAUTION: {
-      bg: 'bg-[#f59e0b]/10 border-[#f59e0b]/40 text-[#fbbf24]',
-      dot: 'bg-[#f59e0b]',
-      label: 'CAUTION // RATIONING',
+      bg: 'bg-amber-50 text-amber-800 border-amber-200',
+      dot: 'bg-amber-500',
+      title: 'Caution // Rationing Required',
+      description: 'Daily allowance requires disciplined tracking across remaining days.',
     },
     AT_RISK: {
-      bg: 'bg-[#ff4d4f]/10 border-[#ff4d4f]/40 text-[#ff4d4f]',
-      dot: 'bg-[#ff4d4f]',
-      label: 'AT RISK // DEFICIT IMMINENT',
+      bg: 'bg-rose-50 text-rose-800 border-rose-200',
+      dot: 'bg-rose-500',
+      title: 'At Risk // Deficit Imminent',
+      description: 'Spendable cash is insufficient to cover mandatory obligations.',
     },
   }[metrics.risk.level];
 
   return (
-    <div className="space-y-6">
-      {/* Editorial Headline & Mission Statement */}
-      <div className="bg-[#10121a] border border-[#1e212d] p-5 sm:p-6 relative overflow-hidden">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#ccff00] mb-1.5 uppercase tracking-wider">
-              <Zap className="w-4 h-4 text-[#ccff00]" />
-              <span>THE ₹10,000 / 30-DAY EXPERIMENT</span>
+    <div className="space-y-8">
+      {/* 1. HERO FINANCIAL COMMAND CENTER: Asymmetrical Editorial Hero */}
+      <div className="bg-[#12141a] text-white rounded-2xl p-6 sm:p-8 lg:p-10 shadow-lg relative overflow-hidden">
+        {/* Subtle background ambient graphic */}
+        <div className="absolute right-0 top-0 w-96 h-96 bg-radial from-[#ccff00]/10 to-transparent pointer-events-none rounded-full blur-3xl" />
+
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          {/* Main Hero Column */}
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs font-mono text-[#ccff00] mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#ccff00] animate-pulse" />
+              <span>YOUR 30-DAY MONEY PLAN &middot; DAY {currentDay} OF {totalDays}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#faf7f0] tracking-tight">
-              Financial Command Center
+
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-black tracking-tight text-white mb-4">
+              Make your ₹10,000 last.
             </h2>
-            <p className="text-xs sm:text-sm text-[#8e96a8] max-w-2xl font-body mt-1 leading-relaxed">
-              Every rupee decision affects your remaining {remainingDays} days. Distinguish clearly between cash spent, cash reserved for upcoming commitments, and your actual safe daily allowance.
+
+            <p className="text-sm sm:text-base text-[#a3adc2] leading-relaxed max-w-xl mb-6">
+              You have <strong className="text-white font-semibold">{remainingDays} days</strong> left in this monthly cycle. Distinguish clearly between cash already spent, upcoming commitments reserved for bills, and your true daily allowance.
             </p>
+
+            {/* Dominant Financial Figure */}
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4 pt-2">
+              <span className="text-xs uppercase tracking-wider text-[#a3adc2] font-mono">
+                CURRENT CASH IN HAND
+              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-5xl sm:text-6xl lg:text-7xl font-heading font-black text-white tracking-tight">
+                  {formatINR(metrics.currentCashBalance)}
+                </span>
+                <span className="text-sm font-mono text-[#a3adc2]">
+                  / {formatINR(metrics.startingBudget)} budget
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* Quick Decision Action */}
-          <div className="flex items-center gap-3">
+          {/* Hero Quick Action Card */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-5 lg:w-80 backdrop-blur-sm flex flex-col justify-between shrink-0">
+            <div>
+              <div className="flex items-center justify-between text-xs text-[#a3adc2] font-mono mb-2">
+                <span>HEALTH STATUS</span>
+                <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border ${riskBadge.bg}`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${riskBadge.dot}`} />
+                  {riskBadge.title}
+                </span>
+              </div>
+              <p className="text-xs text-[#d1d5db] leading-relaxed mb-4">
+                {riskBadge.description}
+              </p>
+            </div>
+
             <button
               onClick={onOpenSimulator}
-              className="bg-[#ccff00] hover:bg-[#b8e600] text-black font-semibold text-xs sm:text-sm font-mono px-4 py-3 transition-colors flex items-center gap-2 shadow-xl cursor-pointer"
+              className="w-full bg-[#ccff00] hover:bg-[#b8e600] text-black font-semibold text-xs sm:text-sm py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-98"
             >
               <Zap className="w-4 h-4 fill-black" />
               <span>Simulate a Purchase</span>
             </button>
-            <button
-              onClick={onOpenAddTransaction}
-              className="bg-[#161822] hover:bg-[#202330] text-[#faf7f0] border border-[#2b3042] text-xs sm:text-sm font-mono px-4 py-3 transition-colors flex items-center gap-2 cursor-pointer"
-            >
-              <span>+ Log Transaction</span>
-            </button>
+          </div>
+        </div>
+
+        {/* Hero Secondary Companion Stats Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8 pt-8 border-t border-white/10 relative z-10">
+          {/* Safe Daily Allowance */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="flex items-center justify-between text-xs text-[#a3adc2] font-mono mb-1">
+              <span>SAFE DAILY ALLOWANCE</span>
+              <Zap className="w-3.5 h-3.5 text-[#ccff00]" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-heading font-black text-[#ccff00]">
+              {formatINR(metrics.safeDailyAllowance)}
+              <span className="text-xs text-[#a3adc2] font-normal font-mono ml-1">/ day</span>
+            </div>
+            <div className="text-[11px] text-[#a3adc2] mt-1">
+              Sustainable baseline over {remainingDays} days
+            </div>
+          </div>
+
+          {/* True Spendable Cash */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="flex items-center justify-between text-xs text-[#a3adc2] font-mono mb-1">
+              <span>SPENDABLE (AFTER BILLS)</span>
+              <Lock className="w-3.5 h-3.5 text-cyan-400" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-heading font-black text-cyan-300">
+              {formatINR(metrics.spendableBalance)}
+            </div>
+            <div className="text-[11px] text-[#a3adc2] mt-1">
+              Reserved: -{formatINR(metrics.totalUnpaidCommitments)} for mandatory bills
+            </div>
+          </div>
+
+          {/* Month-End Forecast */}
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+            <div className="flex items-center justify-between text-xs text-[#a3adc2] font-mono mb-1">
+              <span>MONTH-END FORECAST</span>
+              <Calendar className="w-3.5 h-3.5 text-purple-400" />
+            </div>
+            <div className={`text-2xl sm:text-3xl font-heading font-black ${metrics.forecastedMonthEndBalance >= 0 ? 'text-white' : 'text-rose-400'}`}>
+              {formatINR(metrics.forecastedMonthEndBalance)}
+            </div>
+            <div className="text-[11px] text-[#a3adc2] mt-1">
+              Locked in savings: {formatINR(metrics.totalSavingsAllocated)}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Primary KPI Numbers Grid (Oversized Editorial) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* 1. Cash In Hand */}
-        <div className="bg-[#10121a] border border-[#1e212d] p-5 relative overflow-hidden group hover:border-[#2e3346] transition-colors">
-          <div className="flex items-center justify-between text-xs font-mono text-[#8a92a3] mb-1">
-            <span className="uppercase tracking-wider">CASH IN HAND</span>
-            <Wallet className="w-4 h-4 text-[#faf7f0]" />
-          </div>
-          <div className="text-3xl sm:text-4xl font-heading font-black text-[#faf7f0] tracking-tight my-1">
-            {formatINR(metrics.currentCashBalance)}
-          </div>
-          <div className="text-[11px] font-mono text-[#717b8f] flex items-center justify-between border-t border-[#181a24] pt-2 mt-2">
-            <span>STARTING BUDGET</span>
-            <span className="text-[#faf7f0]">{formatINR(metrics.startingBudget)}</span>
-          </div>
-        </div>
-
-        {/* 2. Safe Daily Allowance */}
-        <div className="bg-[#10121a] border border-[#1e212d] p-5 relative overflow-hidden group hover:border-[#ccff00]/40 transition-colors">
-          <div className="flex items-center justify-between text-xs font-mono text-[#ccff00] mb-1">
-            <span className="uppercase tracking-wider font-semibold">SAFE DAILY ALLOWANCE</span>
-            <Zap className="w-4 h-4 text-[#ccff00]" />
-          </div>
-          <div className="text-3xl sm:text-4xl font-heading font-black text-[#ccff00] tracking-tight my-1">
-            {formatINR(metrics.safeDailyAllowance)}
-            <span className="text-xs font-mono text-[#8a92a3] ml-1 font-normal">/ DAY</span>
-          </div>
-          <div className="text-[11px] font-mono text-[#717b8f] flex items-center justify-between border-t border-[#181a24] pt-2 mt-2">
-            <span>OVER {remainingDays} DAYS LEFT</span>
-            <span className="text-[#ccff00]">
-              {metrics.safeDailyAllowance >= 150 ? 'SUSTAINABLE' : 'TIGHT RATION'}
-            </span>
-          </div>
-        </div>
-
-        {/* 3. Spendable Balance (After Commitments) */}
-        <div className="bg-[#10121a] border border-[#1e212d] p-5 relative overflow-hidden group hover:border-[#2e3346] transition-colors">
-          <div className="flex items-center justify-between text-xs font-mono text-[#8a92a3] mb-1">
-            <span className="uppercase tracking-wider">TRUE SPENDABLE CASH</span>
-            <Lock className="w-4 h-4 text-[#06b6d4]" />
-          </div>
-          <div className="text-3xl sm:text-4xl font-heading font-black text-[#06b6d4] tracking-tight my-1">
-            {formatINR(metrics.spendableBalance)}
-          </div>
-          <div className="text-[11px] font-mono text-[#717b8f] flex items-center justify-between border-t border-[#181a24] pt-2 mt-2">
-            <span>RESERVED COMMITMENTS</span>
-            <span className="text-[#ff4d4f] font-semibold">
-              -{formatINR(metrics.totalUnpaidCommitments)}
-            </span>
-          </div>
-        </div>
-
-        {/* 4. Forecasted Month-End Balance */}
-        <div className="bg-[#10121a] border border-[#1e212d] p-5 relative overflow-hidden group hover:border-[#2e3346] transition-colors">
-          <div className="flex items-center justify-between text-xs font-mono text-[#8a92a3] mb-1">
-            <span className="uppercase tracking-wider">MONTH-END FORECAST</span>
-            <Calendar className="w-4 h-4 text-[#a855f7]" />
-          </div>
-          <div
-            className={`text-3xl sm:text-4xl font-heading font-black tracking-tight my-1 ${
-              metrics.forecastedMonthEndBalance >= 0 ? 'text-[#faf7f0]' : 'text-[#ff4d4f]'
-            }`}
-          >
-            {formatINR(metrics.forecastedMonthEndBalance)}
-          </div>
-          <div className="text-[11px] font-mono text-[#717b8f] flex items-center justify-between border-t border-[#181a24] pt-2 mt-2">
-            <span>SAVINGS LOCKED</span>
-            <span className="text-[#22c55e]">{formatINR(metrics.totalSavingsAllocated)}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Visual Budget Partition Ledger Bar */}
-      <div className="bg-[#10121a] border border-[#1e212d] p-5">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div className="flex items-center gap-2">
-            <span className="font-heading font-bold text-sm text-[#faf7f0]">
+      {/* 2. REDESIGNED BUDGET CAPITAL ALLOCATION VISUALIZATION */}
+      <div className="bg-white border border-[#e8e5dc] rounded-2xl p-6 sm:p-8 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+          <div>
+            <h3 className="font-heading font-bold text-lg sm:text-xl text-[#12141a]">
               ₹10,000 Budget Capital Allocation
-            </span>
-            <span className="font-mono text-xs text-[#717b8f]">
-              // LIVE RECONCILIATION
-            </span>
+            </h3>
+            <p className="text-xs text-[#64748b]">
+              Every single rupee reconciled deterministically from your actual ledger.
+            </p>
           </div>
-          <div className="font-mono text-xs text-[#a3adc2] flex items-center gap-3">
-            <span className="text-[#ccff00] font-bold">
-              {formatINR(metrics.spendableBalance)} Free Discretionary
-            </span>
+          <div className="text-xs font-mono text-[#12141a] font-semibold bg-[#f6f4ee] px-3 py-1.5 rounded-md border border-[#e8e5dc] self-start sm:self-auto">
+            {formatINR(metrics.spendableBalance)} Free Discretionary Runway
           </div>
         </div>
 
-        {/* Stacked Percentage Bar */}
-        <div className="w-full bg-[#161822] h-4 flex overflow-hidden border border-[#252938]">
-          {/* 1. Paid Spent */}
+        {/* Large Visual Stacked Bar */}
+        <div className="w-full bg-[#f6f4ee] h-5 rounded-lg flex overflow-hidden border border-[#e8e5dc] my-4">
+          {/* 1. Spent so far */}
           <div
-            className="bg-[#3b4254] transition-all duration-300"
+            className="bg-[#2d313d] transition-all duration-300"
             style={{ width: `${spentPercent}%` }}
-            title={`Spent so far: ${formatINR(metrics.totalPaidExpenses)} (${spentPercent}%)`}
+            title={`Already Spent: ${formatINR(metrics.totalPaidExpenses)} (${spentPercent}%)`}
           />
           {/* 2. Unpaid Commitments */}
           <div
-            className="bg-[#f59e0b] transition-all duration-300"
+            className="bg-[#d97706] transition-all duration-300"
             style={{ width: `${committedPercent}%` }}
-            title={`Committed Upcoming: ${formatINR(metrics.totalUnpaidCommitments)} (${committedPercent}%)`}
+            title={`Reserved Bills: ${formatINR(metrics.totalUnpaidCommitments)} (${committedPercent}%)`}
           />
-          {/* 3. Spendable Free */}
+          {/* 3. Spendable Free Cash */}
           <div
-            className="bg-[#ccff00] transition-all duration-300"
+            className="bg-[#10b981] transition-all duration-300"
             style={{ width: `${spendablePercent}%` }}
             title={`Spendable Cash: ${formatINR(metrics.spendableBalance)} (${spendablePercent}%)`}
           />
+          {/* 4. Locked in savings */}
+          <div
+            className="bg-[#059669] transition-all duration-300"
+            style={{ width: `${savingsPercent}%` }}
+            title={`Savings Vaults: ${formatINR(metrics.totalSavingsAllocated)} (${savingsPercent}%)`}
+          />
         </div>
 
-        {/* Legend */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3 text-xs font-mono pt-2 border-t border-[#181a24]">
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#3b4254]" />
-            <span className="text-[#8a92a3]">
-              Spent: <strong>{formatINR(metrics.totalPaidExpenses)}</strong> ({spentPercent}%)
-            </span>
+        {/* Detailed Explanation Cards Below Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3">
+          {/* Card 1: Spent */}
+          <div className="bg-[#fcfbf9] border border-[#ede9df] rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-3 h-3 rounded-xs bg-[#2d313d]" />
+              <span className="font-mono text-xs text-[#64748b] uppercase font-semibold">Already Spent</span>
+            </div>
+            <div className="text-xl font-heading font-black text-[#12141a]">
+              {formatINR(metrics.totalPaidExpenses)}
+            </div>
+            <div className="text-xs text-[#64748b] mt-1">
+              {spentPercent}% of budget across Days 1&ndash;11
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#f59e0b]" />
-            <span className="text-[#f59e0b]">
-              Committed: <strong>{formatINR(metrics.totalUnpaidCommitments)}</strong> ({committedPercent}%)
-            </span>
+
+          {/* Card 2: Committed */}
+          <div className="bg-[#fffbeb] border border-[#fde68a] rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-3 h-3 rounded-xs bg-[#d97706]" />
+              <span className="font-mono text-xs text-amber-800 uppercase font-semibold">Reserved Bills</span>
+            </div>
+            <div className="text-xl font-heading font-black text-amber-900">
+              {formatINR(metrics.totalUnpaidCommitments)}
+            </div>
+            <div className="text-xs text-amber-700 mt-1">
+              WiFi, exam fee &amp; power bill upcoming
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#ccff00]" />
-            <span className="text-[#ccff00]">
-              Spendable: <strong>{formatINR(metrics.spendableBalance)}</strong> ({spendablePercent}%)
-            </span>
+
+          {/* Card 3: Free Spendable */}
+          <div className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-3 h-3 rounded-xs bg-[#10b981]" />
+              <span className="font-mono text-xs text-emerald-800 uppercase font-semibold">Discretionary Cash</span>
+            </div>
+            <div className="text-xl font-heading font-black text-emerald-900">
+              {formatINR(metrics.spendableBalance)}
+            </div>
+            <div className="text-xs text-emerald-700 mt-1">
+              Safe for daily meals, travel &amp; leisure
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 bg-[#22c55e]" />
-            <span className="text-[#22c55e]">
-              Savings: <strong>{formatINR(metrics.totalSavingsAllocated)}</strong>
-            </span>
+
+          {/* Card 4: Savings */}
+          <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-3 h-3 rounded-xs bg-[#059669]" />
+              <span className="font-mono text-xs text-emerald-800 uppercase font-semibold">Locked Savings</span>
+            </div>
+            <div className="text-xl font-heading font-black text-emerald-900">
+              {formatINR(metrics.totalSavingsAllocated)}
+            </div>
+            <div className="text-xs text-emerald-700 mt-1">
+              Emergency &amp; trip reserve goals
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Two-Column Diagnostic: Risk Analysis vs Next Commitments */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Risk Analysis Card */}
-        <div className="bg-[#10121a] border border-[#1e212d] p-5 flex flex-col justify-between">
+      {/* 3. TWO-COLUMN COMPOSITION: Health Diagnostic vs Upcoming Commitments */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Column: Health Diagnostic (7 cols) */}
+        <div className="lg:col-span-7 bg-white border border-[#e8e5dc] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-mono text-[#8a92a3] uppercase tracking-wider">
-                FINANCIAL HEALTH &amp; RUNWAY DIAGNOSTIC
-              </span>
-              <span
-                className={`font-mono text-xs px-2.5 py-1 border font-bold flex items-center gap-1.5 ${riskBadge.bg}`}
-              >
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#ede9df]">
+              <div>
+                <h4 className="font-heading font-bold text-base text-[#12141a]">
+                  Financial Health &amp; Runway Diagnostics
+                </h4>
+                <p className="text-xs text-[#64748b]">Transparent, deterministic rules based on your cash and commitments</p>
+              </div>
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${riskBadge.bg}`}>
                 <span className={`w-2 h-2 rounded-full ${riskBadge.dot}`} />
-                {riskBadge.label}
+                {riskBadge.title}
               </span>
             </div>
 
-            <h3 className="font-heading text-lg font-bold text-[#faf7f0] mb-2">
-              {metrics.risk.title}
-            </h3>
-
-            {/* Transparent Reasons List */}
-            <div className="space-y-2 my-3">
+            <div className="space-y-3 mb-4">
               {metrics.risk.reasons.map((reason, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-2 text-xs font-mono text-[#a3adc2] bg-[#0c0d14] p-2.5 border border-[#181a24]"
+                  className="flex items-start gap-2.5 p-3 rounded-lg bg-[#fbfaf7] border border-[#ede9df] text-xs text-[#475569]"
                 >
-                  <Info className="w-3.5 h-3.5 text-[#ccff00] shrink-0 mt-0.5" />
-                  <span>{reason}</span>
+                  <Info className="w-4 h-4 text-[#12141a] shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">{reason}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="pt-3 border-t border-[#181a24] flex items-center justify-between text-xs font-mono text-[#717b8f]">
-            <span>RUNWAY: {metrics.risk.runwayDays} DAYS AT CURRENT PACE</span>
-            <span>SHOCK BUFFER: {formatINR(metrics.risk.emergencyBuffer)}</span>
+          <div className="pt-3 border-t border-[#ede9df] flex flex-wrap items-center justify-between text-xs text-[#64748b] gap-2">
+            <span>RUNWAY PACE: <strong>{metrics.risk.runwayDays} days</strong> at current discretionary pace</span>
+            <span>SHOCK RESISTANCE BUFFER: <strong>{formatINR(metrics.risk.emergencyBuffer)}</strong></span>
           </div>
         </div>
 
-        {/* Upcoming Commitments & Quick Simulation Teaser */}
-        <div className="bg-[#10121a] border border-[#1e212d] p-5 flex flex-col justify-between">
+        {/* Right Column: Next Obligations & Quick Actions (5 cols) */}
+        <div className="lg:col-span-5 bg-white border border-[#e8e5dc] rounded-2xl p-6 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-mono text-[#8a92a3] uppercase tracking-wider">
-                MANDATORY UPCOMING OBLIGATIONS
-              </span>
+            <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#ede9df]">
+              <div>
+                <h4 className="font-heading font-bold text-base text-[#12141a]">
+                  Mandatory Upcoming Bills
+                </h4>
+                <p className="text-xs text-[#64748b]">Reserved upcoming commitments</p>
+              </div>
               <button
                 onClick={() => onNavigateTab('ledger')}
-                className="text-xs font-mono text-[#ccff00] hover:underline flex items-center gap-0.5"
+                className="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1 cursor-pointer"
               >
                 <span>View All</span> &rarr;
               </button>
@@ -302,32 +343,38 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
                 .map((comm) => (
                   <div
                     key={comm.id}
-                    className="flex items-center justify-between p-3 bg-[#0c0d14] border border-[#1a1c28] text-xs font-mono"
+                    className="flex items-center justify-between p-3 rounded-lg bg-[#fbfaf7] border border-[#ede9df] text-xs"
                   >
                     <div>
-                      <div className="font-semibold text-[#faf7f0]">{comm.title}</div>
-                      <div className="text-[11px] text-[#717b8f]">
+                      <div className="font-semibold text-[#12141a]">{comm.title}</div>
+                      <div className="text-[11px] text-[#64748b]">
                         Due on {comm.dateStr} &middot; Mandatory
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="font-bold text-[#ff4d4f]">{formatINR(comm.amount)}</div>
-                      <span className="text-[10px] text-[#f59e0b]">RESERVED</span>
+                      <div className="font-bold text-rose-600 font-mono text-sm">{formatINR(comm.amount)}</div>
+                      <span className="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-sm border border-amber-200">
+                        RESERVED
+                      </span>
                     </div>
                   </div>
                 ))}
             </div>
           </div>
 
-          <div className="mt-4 p-3 bg-[#131722] border border-[#ccff00]/30 text-xs font-mono flex items-center justify-between gap-2">
-            <span className="text-[#ccff00] font-semibold">
-              Want to see what happens before spending ₹1,500?
-            </span>
+          <div className="mt-6 pt-4 border-t border-[#ede9df] flex items-center justify-between">
+            <button
+              onClick={onOpenAddTransaction}
+              className="text-xs font-medium text-[#12141a] hover:underline cursor-pointer"
+            >
+              + Record another expense
+            </button>
             <button
               onClick={onOpenSimulator}
-              className="bg-[#ccff00] text-black font-bold px-3 py-1.5 hover:bg-[#b8e600] transition-colors shrink-0"
+              className="bg-[#12141a] hover:bg-black text-[#ccff00] font-semibold text-xs px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              Simulate &rarr;
+              <span>Simulate Purchase</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>

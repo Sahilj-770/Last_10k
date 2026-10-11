@@ -43,7 +43,6 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
   });
 
   // Calculate day-by-day running balance simulation
-  // Day 1 starts with ₹10,000 starting budget
   const dayBalances: Record<number, number> = {};
   let runningBalance = metrics.startingBudget;
 
@@ -64,7 +63,6 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
     if (d <= currentDay) {
       runningBalance = runningBalance + dayIncome - daySpent;
     } else {
-      // Projected future days: subtract unpaid commitments and average safe daily allowance
       runningBalance = runningBalance - dayCommittedUnpaid - metrics.safeDailyAllowance;
     }
     dayBalances[d] = Math.round(runningBalance);
@@ -76,53 +74,53 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
   return (
     <div className="space-y-6">
       {/* Editorial Header */}
-      <div className="bg-[#10121a] border border-[#1e212d] p-5 sm:p-6">
+      <div className="bg-white border border-[#e8e5dc] rounded-2xl p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#ccff00] mb-1.5 uppercase tracking-wider">
-              <CalendarIcon className="w-4 h-4 text-[#ccff00]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#f6f4ee] rounded-full text-xs font-mono text-[#5a6272] mb-2 border border-[#e8e5dc]">
+              <CalendarIcon className="w-3.5 h-3.5 text-[#12141a]" />
               <span>CHRONOLOGICAL FINANCIAL LIFELINE</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#faf7f0] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#12141a] tracking-tight">
               30-Day Survival Calendar
             </h2>
-            <p className="text-xs sm:text-sm text-[#8e96a8] max-w-2xl font-body mt-1 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#5a6272] max-w-2xl mt-1 leading-relaxed">
               Track historical expenses, upcoming mandatory bills, and predicted daily spending pace. High financial pressure days are flagged to prevent mid-month insolvency.
             </p>
           </div>
 
-          <div className="flex items-center gap-3 bg-[#0a0b0f] border border-[#1e212d] p-3 text-xs font-mono">
+          <div className="flex items-center gap-4 bg-[#fbfaf7] border border-[#e8e5dc] rounded-xl p-3.5 text-xs font-mono">
             <div>
-              <span className="text-[#717b8f] block">CURRENT POSITION</span>
-              <strong className="text-[#ccff00] text-sm">DAY {currentDay} OF {totalDays}</strong>
+              <span className="text-[#8c95a6] block text-[10px] uppercase">Current Position</span>
+              <strong className="text-sm font-bold text-[#12141a]">Day {currentDay} of {totalDays}</strong>
             </div>
-            <div className="w-px h-8 bg-[#232738]" />
+            <div className="w-px h-8 bg-[#e8e5dc]" />
             <div>
-              <span className="text-[#717b8f] block">SAFE DAILY</span>
-              <strong className="text-[#faf7f0] text-sm">{formatINR(metrics.safeDailyAllowance)}/d</strong>
+              <span className="text-[#8c95a6] block text-[10px] uppercase">Daily Allowance</span>
+              <strong className="text-sm font-bold text-emerald-700">{formatINR(metrics.safeDailyAllowance)}/d</strong>
             </div>
           </div>
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap items-center gap-4 mt-4 pt-3 border-t border-[#181a24] text-xs font-mono text-[#8a92a3]">
+        <div className="flex flex-wrap items-center gap-4 mt-5 pt-4 border-t border-[#ede9df] text-xs text-[#5a6272]">
           <span className="inline-flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#3b4254]" /> Past Recorded Day
+            <span className="w-2.5 h-2.5 rounded-full bg-[#cbd5e1]" /> Past Recorded Day
           </span>
-          <span className="inline-flex items-center gap-1.5 text-[#ccff00]">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ccff00]" /> Today (Day {currentDay})
+          <span className="inline-flex items-center gap-1.5 font-medium text-[#12141a]">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#12141a]" /> Today (Day {currentDay})
           </span>
-          <span className="inline-flex items-center gap-1.5 text-[#f59e0b]">
-            <span className="w-2.5 h-2.5 bg-[#f59e0b]" /> Mandatory Commitment Due
+          <span className="inline-flex items-center gap-1.5 text-amber-700 font-medium">
+            <span className="w-2.5 h-2.5 rounded-xs bg-[#d97706]" /> Mandatory Commitment Due
           </span>
-          <span className="inline-flex items-center gap-1.5 text-[#ff4d4f]">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff4d4f]" /> High Pressure Point
+          <span className="inline-flex items-center gap-1.5 text-rose-600 font-medium">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#e11d48]" /> High Pressure Point
           </span>
         </div>
       </div>
 
       {/* 30-Day Calendar Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3">
         {Array.from({ length: totalDays }, (_, i) => i + 1).map((d) => {
           const isPast = d < currentDay;
           const isToday = d === currentDay;
@@ -146,59 +144,59 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
             <div
               key={d}
               onClick={() => setSelectedDay(d)}
-              className={`p-3 border transition-all cursor-pointer relative flex flex-col justify-between min-h-[95px] font-mono ${
+              className={`p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between min-h-[105px] ${
                 isSelected
-                  ? 'border-[#ccff00] bg-[#171a24] shadow-xl'
+                  ? 'border-[#12141a] bg-white shadow-md ring-2 ring-[#12141a]/10'
                   : isToday
-                  ? 'border-[#ccff00]/60 bg-[#121622]'
+                  ? 'border-[#12141a] bg-[#12141a] text-white shadow-sm'
                   : isPast
-                  ? 'border-[#1a1d28] bg-[#0c0d14] hover:border-[#2e3346]'
-                  : 'border-[#1a1d28] bg-[#0e1017] hover:border-[#2e3346]'
+                  ? 'border-[#e8e5dc] bg-[#fbfaf7] hover:border-[#12141a]/40 hover:bg-white'
+                  : 'border-[#ede9df] bg-white hover:border-[#12141a]/40'
               }`}
             >
-              {/* Day Number & Status */}
+              {/* Day Number Header */}
               <div className="flex items-center justify-between">
                 <span
-                  className={`text-sm font-bold ${
+                  className={`text-xs font-mono font-bold ${
                     isToday
                       ? 'text-[#ccff00]'
                       : isSelected
-                      ? 'text-[#faf7f0]'
+                      ? 'text-[#12141a]'
                       : isPast
-                      ? 'text-[#8a92a3]'
-                      : 'text-[#656d80]'
+                      ? 'text-[#5a6272]'
+                      : 'text-[#8c95a6]'
                   }`}
                 >
                   DAY {d}
                 </span>
 
                 {isToday ? (
-                  <span className="text-[9px] bg-[#ccff00] text-black px-1.5 py-0.2 font-bold">
+                  <span className="text-[9px] bg-[#ccff00] text-black px-1.5 py-0.5 rounded-xs font-bold font-mono">
                     TODAY
                   </span>
                 ) : isHighPressure ? (
-                  <span className="w-2 h-2 rounded-full bg-[#ff4d4f]" title="High financial pressure" />
+                  <span className="w-2 h-2 rounded-full bg-rose-500" title="High financial pressure point" />
                 ) : hasCommitment ? (
-                  <span className="w-2 h-2 bg-[#f59e0b]" title="Commitment due" />
+                  <span className="w-2 h-2 rounded-xs bg-amber-500" title="Commitment bill due" />
                 ) : null}
               </div>
 
-              {/* Day Value Readout */}
-              <div className="my-1.5">
+              {/* Day Activity Readout */}
+              <div className="my-1.5 font-mono">
                 {isPast ? (
                   dayTotalSpent > 0 ? (
                     <div>
-                      <div className="text-xs font-semibold text-[#faf7f0]">
+                      <div className="text-xs font-bold text-[#12141a]">
                         -{formatINR(dayTotalSpent)}
                       </div>
-                      <div className="text-[10px] text-[#717b8f]">{dayTxs.length} entries</div>
+                      <div className="text-[10px] text-[#8c95a6]">{dayTxs.length} spent</div>
                     </div>
                   ) : (
-                    <div className="text-[10px] text-[#555d70]">Zero spend</div>
+                    <div className="text-[10px] text-[#8c95a6]">₹0 spend</div>
                   )
                 ) : isToday ? (
                   <div>
-                    <div className="text-xs font-semibold text-[#ccff00]">
+                    <div className="text-xs font-bold text-white">
                       {dayTotalSpent > 0 ? `-${formatINR(dayTotalSpent)}` : 'Active'}
                     </div>
                     <div className="text-[10px] text-[#a3adc2]">
@@ -209,20 +207,20 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
                   <div>
                     {hasCommitment ? (
                       <div>
-                        <div className="text-xs font-bold text-[#f59e0b]">
+                        <div className="text-xs font-bold text-amber-700">
                           Bill: {formatINR(dayCommitted)}
                         </div>
-                        <div className="text-[10px] text-[#717b8f]">Commitment</div>
+                        <div className="text-[10px] text-[#8c95a6]">Reserved</div>
                       </div>
                     ) : daySubs.length > 0 ? (
                       <div>
-                        <div className="text-xs text-[#ec4899]">
+                        <div className="text-xs text-pink-600 font-semibold">
                           Sub: {formatINR(daySubs[0].amount)}
                         </div>
-                        <div className="text-[10px] text-[#717b8f]">{daySubs[0].name}</div>
+                        <div className="text-[10px] text-[#8c95a6] truncate">{daySubs[0].name}</div>
                       </div>
                     ) : (
-                      <div className="text-[10px] text-[#555d70]">
+                      <div className="text-[10px] text-[#8c95a6]">
                         Pace: ~{formatINR(metrics.safeDailyAllowance)}
                       </div>
                     )}
@@ -230,10 +228,14 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
                 )}
               </div>
 
-              {/* Projected Closing Balance on That Day */}
-              <div className="text-[10px] text-[#656d80] pt-1 border-t border-[#181a24] flex justify-between items-center">
+              {/* Projected Closing Balance */}
+              <div
+                className={`text-[10px] font-mono pt-1.5 border-t flex justify-between items-center ${
+                  isToday ? 'border-white/10 text-[#a3adc2]' : 'border-[#f0ece1] text-[#8c95a6]'
+                }`}
+              >
                 <span>EOD:</span>
-                <span className={dayBalances[d] < 0 ? 'text-[#ff4d4f] font-bold' : 'text-[#8a92a3]'}>
+                <span className={dayBalances[d] < 0 ? 'text-rose-600 font-bold' : isToday ? 'text-white font-medium' : 'text-[#5a6272] font-medium'}>
                   {formatINR(dayBalances[d])}
                 </span>
               </div>
@@ -242,67 +244,67 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
         })}
       </div>
 
-      {/* Day Inspection Drawer / Detail Panel */}
-      <div className="bg-[#10121a] border border-[#1e212d] p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-[#181a24]">
+      {/* Selected Day Audit & Ledger Drawer */}
+      <div className="bg-white border border-[#e8e5dc] rounded-2xl p-6 sm:p-7 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#ede9df]">
           <div className="flex items-center gap-3">
-            <span className="font-heading font-black text-xl text-[#faf7f0]">
+            <h3 className="font-heading font-black text-xl text-[#12141a]">
               Day {selectedDay} Audit &amp; Ledger
-            </span>
-            <span className="text-xs font-mono text-[#ccff00]">
+            </h3>
+            <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-[#f6f4ee] text-[#5a6272] border border-[#e8e5dc]">
               {selectedDay === currentDay
-                ? '(TODAY)'
+                ? 'TODAY'
                 : selectedDay < currentDay
-                ? '(PAST RECORD)'
-                : '(FUTURE FORECAST)'}
+                ? 'PAST RECORD'
+                : 'FUTURE FORECAST'}
             </span>
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-mono">
-            <span className="text-[#8a92a3]">
-              Projected Balance at Day {selectedDay} Close:{' '}
-              <strong className="text-[#faf7f0]">{formatINR(dayBalances[selectedDay])}</strong>
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <span className="text-[#5a6272]">
+              Projected balance at Day {selectedDay} close:{' '}
+              <strong className="text-[#12141a] text-sm">{formatINR(dayBalances[selectedDay])}</strong>
             </span>
             <button
               onClick={() => onOpenSimulatorForDay(selectedDay)}
-              className="bg-[#181b28] hover:bg-[#25293d] text-[#ccff00] border border-[#ccff00]/40 px-3 py-1.5 transition-colors"
+              className="bg-[#12141a] hover:bg-black text-[#ccff00] font-semibold px-3 py-1.5 rounded-md transition-colors cursor-pointer text-xs"
             >
               Simulate on Day {selectedDay} &rarr;
             </button>
           </div>
         </div>
 
-        {/* Transactions list for selected day */}
+        {/* Selected day entries */}
         <div className="mt-4">
           {selectedTxs.length === 0 && selectedSubscriptions.length === 0 ? (
-            <div className="py-8 text-center text-xs font-mono text-[#656d80]">
+            <div className="py-8 text-center text-xs text-[#8c95a6]">
               No discrete transactions recorded on Day {selectedDay}.
               {selectedDay > currentDay && (
-                <span className="block mt-1 text-[#8a92a3]">
+                <span className="block mt-1 text-[#5a6272]">
                   Projected discretionary spending pace: ~{formatINR(metrics.safeDailyAllowance)}/day.
                 </span>
               )}
             </div>
           ) : (
-            <div className="space-y-2 font-mono text-xs">
+            <div className="space-y-2.5">
               {selectedTxs.map((tx) => (
                 <div
                   key={tx.id}
-                  className="p-3 bg-[#090a0f] border border-[#1b1e2c] flex items-center justify-between"
+                  className="p-3.5 rounded-xl bg-[#fbfaf7] border border-[#ede9df] flex items-center justify-between text-xs"
                 >
                   <div className="flex items-center gap-3">
                     <span
-                      className={`w-2 h-2 rounded-full ${
+                      className={`w-2.5 h-2.5 rounded-full ${
                         tx.type === 'commitment'
-                          ? 'bg-[#f59e0b]'
+                          ? 'bg-amber-500'
                           : tx.type === 'income'
-                          ? 'bg-[#22c55e]'
-                          : 'bg-[#ff4d4f]'
+                          ? 'bg-emerald-500'
+                          : 'bg-slate-700'
                       }`}
                     />
                     <div>
-                      <div className="font-bold text-[#faf7f0]">{tx.title}</div>
-                      <div className="text-[11px] text-[#717b8f]">
+                      <div className="font-bold text-[#12141a]">{tx.title}</div>
+                      <div className="text-[11px] text-[#64748b]">
                         {CATEGORY_META[tx.category]?.label} &middot;{' '}
                         {tx.isEssential ? 'Essential' : 'Discretionary'}
                         {tx.notes && ` · ${tx.notes}`}
@@ -310,38 +312,37 @@ export const SurvivalCalendar: React.FC<SurvivalCalendarProps> = ({
                     </div>
                   </div>
 
-                  <div className="text-right">
+                  <div className="text-right font-mono">
                     <div
                       className={`font-black text-sm ${
-                        tx.type === 'income' ? 'text-[#22c55e]' : 'text-[#faf7f0]'
+                        tx.type === 'income' ? 'text-emerald-700' : 'text-[#12141a]'
                       }`}
                     >
                       {tx.type === 'income' ? '+' : '-'}
                       {formatINR(tx.amount)}
                     </div>
-                    <span className="text-[10px] text-[#717b8f]">
-                      {tx.type === 'commitment' ? (tx.isPaid ? 'PAID' : 'UNPAID COMMITMENT') : 'RECORDED'}
+                    <span className="text-[10px] text-[#8c95a6]">
+                      {tx.type === 'commitment' ? (tx.isPaid ? 'SETTLED' : 'RESERVED BILL') : 'COMPLETED DEBIT'}
                     </span>
                   </div>
                 </div>
               ))}
 
-              {/* Subscriptions renewing on this day */}
               {selectedSubscriptions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="p-3 bg-[#13101b] border border-[#ec4899]/30 flex items-center justify-between"
+                  className="p-3.5 rounded-xl bg-pink-50/50 border border-pink-200 flex items-center justify-between text-xs"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-2 h-2 rounded-full bg-[#ec4899]" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-pink-500" />
                     <div>
-                      <div className="font-bold text-[#ec4899]">{sub.name} (Recurring)</div>
-                      <div className="text-[11px] text-[#8a92a3]">Scheduled Subscription Renewal</div>
+                      <div className="font-bold text-pink-900">{sub.name} (Recurring)</div>
+                      <div className="text-[11px] text-pink-700">Scheduled subscription renewal</div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="font-bold text-sm text-[#ec4899]">-{formatINR(sub.amount)}</div>
-                    <span className="text-[10px] text-[#a3adc2]">
+                  <div className="text-right font-mono">
+                    <div className="font-bold text-sm text-pink-900">-{formatINR(sub.amount)}</div>
+                    <span className="text-[10px] text-pink-700">
                       {sub.isActive ? 'ACTIVE' : 'SIMULATED OFF'}
                     </span>
                   </div>

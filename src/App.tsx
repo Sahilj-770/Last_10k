@@ -85,7 +85,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#08090d] text-[#faf7f0]">
+    <div className="min-h-screen flex flex-col bg-[#fbfaf7] text-[#12141a]">
       {/* Header */}
       <Header
         currentDay={currentDay}
@@ -100,7 +100,7 @@ export function App() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-8 lg:px-12 py-6 sm:py-8 space-y-8">
         {activeTab === 'command' && (
           <div className="space-y-8">
             <CommandCenter

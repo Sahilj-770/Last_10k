@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { Subscription } from '../types/finance';
 import { formatINR } from '../utils/financeEngine';
 import {
@@ -37,33 +37,33 @@ export const SubscriptionLeakDetector: React.FC<SubscriptionLeakDetectorProps> =
   return (
     <div className="space-y-6">
       {/* Editorial Header */}
-      <div className="bg-[#10121a] border border-[#1e212d] p-5 sm:p-6">
+      <div className="bg-white border border-[#e8e5dc] rounded-2xl p-6 sm:p-8 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#ec4899] mb-1.5 uppercase tracking-wider">
-              <TrendingDown className="w-4 h-4 text-[#ec4899]" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-pink-50 text-pink-700 rounded-full text-xs font-mono mb-2 border border-pink-200">
+              <TrendingDown className="w-3.5 h-3.5 text-pink-700" />
               <span>RECURRING CASH LEAK RADAR</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#faf7f0] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#12141a] tracking-tight">
               Subscription Leak Detector
             </h2>
-            <p className="text-xs sm:text-sm text-[#8e96a8] max-w-2xl font-body mt-1 leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#5a6272] max-w-2xl mt-1 leading-relaxed">
               Small monthly auto-debits eat away at your daily allowance silently. Toggle any subscription off to test what cancelling it immediately does to your 30-day runway.
             </p>
           </div>
 
           {/* Quick Metrics Badge */}
-          <div className="flex items-center gap-4 bg-[#090a0f] border border-[#1e212d] p-3 text-xs font-mono">
+          <div className="flex items-center gap-4 bg-[#fbfaf7] border border-[#e8e5dc] rounded-xl p-3.5 text-xs">
             <div>
-              <span className="text-[#717b8f] block uppercase">ACTIVE SUBS</span>
-              <strong className="text-lg text-[#ec4899] font-black">
-                {formatINR(totalActiveMonthly)}/mo
+              <span className="text-[#8c95a6] block text-[10px] uppercase font-mono">Active Subscriptions</span>
+              <strong className="text-xl text-pink-700 font-heading font-black">
+                {formatINR(totalActiveMonthly)}<span className="text-xs text-[#8c95a6] font-normal">/mo</span>
               </strong>
             </div>
-            <div className="w-px h-8 bg-[#232738]" />
+            <div className="w-px h-8 bg-[#e8e5dc]" />
             <div>
-              <span className="text-[#717b8f] block uppercase">BUDGET DRAIN</span>
-              <strong className="text-lg text-[#faf7f0] font-black">
+              <span className="text-[#8c95a6] block text-[10px] uppercase font-mono">Budget Drain</span>
+              <strong className="text-xl text-[#12141a] font-heading font-black">
                 {budgetConsumedPercent}%
               </strong>
             </div>
@@ -72,28 +72,28 @@ export const SubscriptionLeakDetector: React.FC<SubscriptionLeakDetectorProps> =
       </div>
 
       {/* Subscription Cards & Toggle Matrix */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         {subscriptions.map((sub) => {
           const percentOfBudget = ((sub.amount / startingBudget) * 100).toFixed(1);
 
           return (
             <div
               key={sub.id}
-              className={`p-5 border transition-all flex flex-col justify-between font-mono text-xs ${
+              className={`p-6 rounded-2xl border transition-all flex flex-col justify-between text-xs ${
                 sub.isActive
-                  ? 'bg-[#10121a] border-[#222533] hover:border-[#383d54]'
-                  : 'bg-[#090a0f] border-[#161822] opacity-60'
+                  ? 'bg-white border-[#e8e5dc] shadow-xs hover:border-[#12141a]/40'
+                  : 'bg-[#fbfaf7] border-[#ede9df] opacity-60'
               }`}
             >
               <div>
                 {/* Header */}
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[#ec4899] font-bold text-sm">{sub.name}</span>
+                  <span className="text-[#12141a] font-heading font-bold text-base">{sub.name}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 border ${
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
                       sub.isActive
-                        ? 'bg-[#22c55e]/10 text-[#22c55e] border-[#22c55e]/30'
-                        : 'bg-[#374151]/20 text-[#6b7280] border-[#374151]'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200 font-medium'
+                        : 'bg-stone-100 text-stone-500 border-stone-200'
                     }`}
                   >
                     {sub.isActive ? 'ACTIVE BILL' : 'PAUSED'}
@@ -101,31 +101,33 @@ export const SubscriptionLeakDetector: React.FC<SubscriptionLeakDetectorProps> =
                 </div>
 
                 {/* Amount */}
-                <div className="text-2xl font-heading font-black text-[#faf7f0] my-2">
+                <div className="text-3xl font-heading font-black text-[#12141a] my-2">
                   {formatINR(sub.amount)}
-                  <span className="text-xs font-mono text-[#717b8f] font-normal"> / month</span>
+                  <span className="text-xs font-mono text-[#8c95a6] font-normal"> / month</span>
                 </div>
 
-                <div className="space-y-1.5 text-[11px] text-[#8e96a8] border-t border-[#181a24] pt-2 mb-3">
-                  <div>
-                    Renews on: <strong>Day {sub.renewalDay}</strong> of month
+                <div className="space-y-1.5 text-xs text-[#5a6272] border-t border-[#ede9df] pt-3 mb-4">
+                  <div className="flex justify-between">
+                    <span>Renews on:</span>
+                    <strong className="text-[#12141a] font-mono">Day {sub.renewalDay} of month</strong>
                   </div>
-                  <div>
-                    Consumes: <strong>{percentOfBudget}%</strong> of total ₹10K budget
+                  <div className="flex justify-between">
+                    <span>Budget Consumed:</span>
+                    <strong className="text-[#12141a] font-mono">{percentOfBudget}%</strong>
                   </div>
-                  <div>
-                    Classification:{' '}
-                    <span className={sub.isEssential ? 'text-[#60a5fa]' : 'text-[#f59e0b]'}>
+                  <div className="flex justify-between">
+                    <span>Classification:</span>
+                    <span className={sub.isEssential ? 'text-blue-700 font-medium' : 'text-amber-700 font-medium'}>
                       {sub.isEssential ? 'Essential (Cloud backup)' : 'Discretionary'}
                     </span>
                   </div>
-                  {sub.notes && <div className="text-[#656d80] text-[10px] mt-1">{sub.notes}</div>}
+                  {sub.notes && <div className="text-[#8c95a6] text-[11px] pt-1">{sub.notes}</div>}
                 </div>
               </div>
 
               {/* Interactive Simulation Toggle */}
-              <div className="pt-3 border-t border-[#181a24] flex items-center justify-between">
-                <span className="text-[10px] text-[#717b8f]">
+              <div className="pt-3 border-t border-[#ede9df] flex items-center justify-between">
+                <span className="text-[11px] text-[#8c95a6]">
                   {sub.isActive ? 'Simulate cancellation' : 'Simulate reactivation'}
                 </span>
                 <button
@@ -137,10 +139,10 @@ export const SubscriptionLeakDetector: React.FC<SubscriptionLeakDetectorProps> =
                         : `Reactivated ${sub.name}: -₹${sub.amount} committed.`
                     );
                   }}
-                  className={`px-3 py-1.5 font-bold text-xs flex items-center gap-1.5 transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg font-semibold text-xs flex items-center gap-1.5 transition-colors cursor-pointer ${
                     sub.isActive
-                      ? 'bg-[#241318] hover:bg-[#381a24] text-[#ff4d4f] border border-[#48202b]'
-                      : 'bg-[#121c10] hover:bg-[#1a2b16] text-[#ccff00] border border-[#ccff00]/40'
+                      ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
+                      : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
                   }`}
                 >
                   <Power className="w-3.5 h-3.5" />
@@ -154,14 +156,14 @@ export const SubscriptionLeakDetector: React.FC<SubscriptionLeakDetectorProps> =
 
       {/* Strategic Insight Box */}
       {potentialSavings > 0 && (
-        <div className="bg-[#12141e] border border-[#ec4899]/30 p-4 text-xs font-mono flex items-start gap-3">
-          <AlertTriangle className="w-4 h-4 text-[#ec4899] shrink-0 mt-0.5" />
+        <div className="bg-[#fffbeb] border border-amber-200 rounded-2xl p-5 text-xs flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <strong className="text-[#faf7f0]">DISCRETIONARY SUBSCRIPTION AUDIT:</strong>
-            <p className="text-[#a3adc2] leading-relaxed">
+            <strong className="text-amber-900 font-heading text-sm">Discretionary Subscription Audit Recommendation:</strong>
+            <p className="text-amber-800 leading-relaxed text-xs">
               Cancelling non-essential streaming and gaming auto-debits would immediately free up{' '}
-              <strong className="text-[#ccff00]">{formatINR(potentialSavings)}</strong>, adding ~
-              <strong className="text-[#ccff00]">
+              <strong className="text-emerald-800">{formatINR(potentialSavings)}</strong>, adding ~
+              <strong className="text-emerald-800 font-mono">
                 {formatINR(Math.round(potentialSavings / 19))}/day
               </strong>{' '}
               to your remaining daily discretionary allowance.

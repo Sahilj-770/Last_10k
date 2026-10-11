@@ -7,8 +7,7 @@ import {
   X,
   AlertTriangle,
   CheckCircle2,
-  TrendingUp,
-  Target,
+  Lock,
   ArrowRight,
 } from 'lucide-react';
 
@@ -48,36 +47,37 @@ export const SavingsGoals: React.FC<SavingsGoalsProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="bg-white border border-[#e8e5dc] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6">
       {/* Editorial Header */}
-      <div className="bg-[#10121a] border border-[#1e212d] p-5 sm:p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#22c55e] mb-1.5 uppercase tracking-wider">
-              <PiggyBank className="w-4 h-4 text-[#22c55e]" />
-              <span>CAPITAL PRESERVATION TARGETS</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#faf7f0] tracking-tight">
-              Savings Goals &amp; Reserves
-            </h2>
-            <p className="text-xs sm:text-sm text-[#8e96a8] max-w-2xl font-body mt-1 leading-relaxed">
-              Ring-fence money from your daily spending temptations. Lock funds into dedicated goal vaults before non-essential purchases consume it.
-            </p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-[#ede9df]">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200/60 mb-2">
+            <PiggyBank className="w-3.5 h-3.5 text-emerald-600" />
+            <span>CAPITAL PRESERVATION &amp; RESERVES</span>
           </div>
+          <h2 className="text-2xl sm:text-3xl font-heading font-black text-[#12141a] tracking-tight">
+            Ring-Fenced Savings Goals
+          </h2>
+          <p className="text-sm text-[#5a6272] max-w-2xl mt-1 leading-relaxed">
+            Ring-fence funds from daily temptation. Money allocated here is shielded from your safe daily allowance calculations to guarantee end-of-month targets.
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3 bg-[#0a0b0f] border border-[#1e212d] p-3 text-xs font-mono">
-            <div>
-              <span className="text-[#717b8f] block uppercase">TOTAL SAVED</span>
-              <strong className="text-lg text-[#22c55e] font-black">
-                {formatINR(metrics.totalSavingsAllocated)}
-              </strong>
-            </div>
+        <div className="flex items-center gap-4 bg-[#f8f7f2] border border-[#e8e5dc] rounded-xl p-4 self-start md:self-auto">
+          <div className="w-10 h-10 rounded-lg bg-emerald-100/70 border border-emerald-200 flex items-center justify-center text-emerald-800 font-black">
+            <Lock className="w-5 h-5 text-emerald-700" />
+          </div>
+          <div>
+            <span className="text-[10px] text-[#64748b] font-medium uppercase tracking-wider block">TOTAL RING-FENCED</span>
+            <strong className="text-2xl font-heading font-black text-emerald-700">
+              {formatINR(metrics.totalSavingsAllocated)}
+            </strong>
           </div>
         </div>
       </div>
 
-      {/* Goal Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Goal Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {savingsGoals.map((goal) => {
           const progressPercent = Math.min(
             100,
@@ -91,81 +91,90 @@ export const SavingsGoals: React.FC<SavingsGoalsProps> = ({
           return (
             <div
               key={goal.id}
-              className="bg-[#10121a] border border-[#222533] p-5 flex flex-col justify-between font-mono text-xs"
+              className="bg-[#fbfaf7] border border-[#e8e5dc] rounded-xl p-5 flex flex-col justify-between hover:border-[#d6d0c2] transition-colors"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-sm text-[#faf7f0]">{goal.title}</span>
-                  <span className="text-[10px] text-[#22c55e] bg-[#22c55e]/10 px-2 py-0.5 border border-[#22c55e]/30">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="font-heading font-bold text-base text-[#12141a]">{goal.title}</span>
+                  <span className="text-[11px] font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/70">
                     {progressPercent}% FUNDED
                   </span>
                 </div>
 
-                <div className="flex items-baseline gap-2 my-2">
-                  <span className="text-2xl font-heading font-black text-[#22c55e]">
+                <div className="flex items-baseline gap-2 mb-3">
+                  <span className="text-2xl sm:text-3xl font-heading font-black text-[#12141a]">
                     {formatINR(goal.currentAmount)}
                   </span>
-                  <span className="text-xs text-[#717b8f]">
+                  <span className="text-xs text-[#64748b] font-medium">
                     of {formatINR(goal.targetAmount)} target
                   </span>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="w-full bg-[#181a24] h-2 border border-[#232738] my-3 overflow-hidden">
+                {/* Progress Track */}
+                <div className="w-full bg-[#ede9df] h-2.5 rounded-full my-3 overflow-hidden">
                   <div
-                    className="bg-[#22c55e] h-full transition-all duration-300"
+                    className="bg-emerald-600 h-full rounded-full transition-all duration-300"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
 
-                <div className="space-y-1.5 text-[11px] text-[#8e96a8] border-t border-[#181a24] pt-2 mb-3">
+                <div className="grid grid-cols-3 gap-2 py-3 border-t border-[#ede9df] text-xs">
                   <div>
-                    Remaining Gap: <strong className="text-[#faf7f0]">{formatINR(shortfall)}</strong>
+                    <span className="text-[10px] text-[#64748b] block">Remaining Gap</span>
+                    <strong className="text-[#12141a] font-semibold">{formatINR(shortfall)}</strong>
                   </div>
                   <div>
-                    Target Horizon: <strong>Day {goal.targetDay}</strong> (Month End)
+                    <span className="text-[10px] text-[#64748b] block">Target Day</span>
+                    <strong className="text-[#12141a] font-semibold">Day {goal.targetDay}</strong>
                   </div>
                   <div>
-                    Required Pace: <strong>{formatINR(requiredDailyRate)}/day</strong>
+                    <span className="text-[10px] text-[#64748b] block">Required Pace</span>
+                    <strong className="text-[#12141a] font-semibold">{formatINR(requiredDailyRate)}/d</strong>
                   </div>
-                  {goal.description && (
-                    <div className="text-[#656d80] text-[10px] mt-1">{goal.description}</div>
-                  )}
                 </div>
+
+                {goal.description && (
+                  <p className="text-xs text-[#64748b] italic pt-1 mb-3">
+                    {goal.description}
+                  </p>
+                )}
 
                 {/* Feasibility Warning */}
                 {isAtRisk && (
-                  <div className="bg-[#241315] border border-[#ff4d4f]/40 p-2 text-[10px] text-[#ff4d4f] flex items-center gap-1.5 mb-3">
-                    <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                  <div className="bg-rose-50 border border-rose-200 rounded-lg p-2.5 text-xs text-rose-800 flex items-start gap-2 mb-3">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
                     <span>
-                      Required pace ({formatINR(requiredDailyRate)}/d) exceeds safe daily allowance ({formatINR(metrics.safeDailyAllowance)}/d)!
+                      Required pace ({formatINR(requiredDailyRate)}/d) exceeds safe daily allowance ({formatINR(metrics.safeDailyAllowance)}/d). Consider reallocating or extending horizon.
                     </span>
                   </div>
                 )}
               </div>
 
               {/* Action: Add Funds to Vault */}
-              <div className="pt-3 border-t border-[#181a24]">
+              <div className="pt-3 border-t border-[#ede9df] mt-2">
                 {selectedGoalId === goal.id ? (
                   <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      step="50"
-                      min="50"
-                      max={metrics.spendableBalance}
-                      value={contributeAmount}
-                      onChange={(e) => setContributeAmount(Number(e.target.value))}
-                      className="w-24 bg-[#090a0f] border border-[#22c55e] px-2 py-1 text-xs text-[#faf7f0] focus:outline-none"
-                    />
+                    <div className="relative flex-1">
+                      <span className="absolute left-2.5 top-2 text-xs text-[#64748b]">₹</span>
+                      <input
+                        type="number"
+                        step="50"
+                        min="50"
+                        max={metrics.spendableBalance}
+                        value={contributeAmount}
+                        onChange={(e) => setContributeAmount(Number(e.target.value))}
+                        className="w-full bg-white border border-[#12141a] pl-6 pr-2 py-1.5 rounded-lg text-xs font-semibold text-[#12141a] focus:outline-none"
+                      />
+                    </div>
                     <button
                       onClick={() => handleContribute(goal.id)}
-                      className="px-3 py-1 bg-[#22c55e] text-black font-bold text-xs"
+                      className="px-4 py-2 bg-[#12141a] hover:bg-black text-[#ccff00] font-semibold text-xs rounded-lg transition-colors cursor-pointer"
                     >
                       Confirm Lock
                     </button>
                     <button
                       onClick={() => setSelectedGoalId(null)}
-                      className="text-[#656d80] hover:text-[#faf7f0]"
+                      className="text-[#64748b] hover:text-[#12141a] p-1.5 cursor-pointer"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -177,10 +186,10 @@ export const SavingsGoals: React.FC<SavingsGoalsProps> = ({
                       setContributeAmount(Math.min(250, metrics.spendableBalance));
                     }}
                     disabled={metrics.spendableBalance <= 0}
-                    className="w-full py-2 bg-[#161a26] hover:bg-[#202538] text-[#22c55e] border border-[#22c55e]/40 font-bold transition-colors flex items-center justify-center gap-1.5 disabled:opacity-40"
+                    className="w-full py-2.5 bg-white hover:bg-[#ede9df]/50 text-[#12141a] border border-[#d6d0c2] rounded-lg font-semibold text-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-40 cursor-pointer"
                   >
-                    <Plus className="w-3.5 h-3.5" />
-                    <span>Transfer Cash to This Goal Vault</span>
+                    <Plus className="w-4 h-4 text-[#12141a]" />
+                    <span>Lock Cash into Goal Vault</span>
                   </button>
                 )}
               </div>

@@ -18,17 +18,19 @@ export const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
   if (!message) return null;
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 max-w-sm bg-[#131722] border-l-4 border-l-[#ff5500] border border-[#2a2f44] p-3.5 shadow-2xl flex items-center justify-between gap-3 text-xs font-mono text-[#faf8f5] animate-in fade-in slide-in-from-bottom-2 duration-200">
-      <div className="flex items-center gap-2">
-        <CheckCircle2 className="w-4 h-4 text-[#ff5500] shrink-0" />
-        <span>{message}</span>
+    <div className="fixed bottom-6 right-6 z-50 max-w-md bg-[#12141a] text-white p-4 rounded-xl shadow-2xl flex items-center justify-between gap-3 text-xs border border-white/10 animate-in fade-in slide-in-from-bottom-2 duration-200">
+      <div className="flex items-center gap-2.5">
+        <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+          <CheckCircle2 className="w-4 h-4" />
+        </span>
+        <span className="font-medium text-stone-100">{message}</span>
       </div>
       <button
         onClick={onClose}
-        className="text-[#8e97a8] hover:text-[#faf8f5] p-1 transition-colors"
+        className="text-[#8e97a8] hover:text-white p-1 transition-colors cursor-pointer"
         aria-label="Dismiss notification"
       >
-        <X className="w-3.5 h-3.5" />
+        <X className="w-4 h-4" />
       </button>
     </div>
   );
