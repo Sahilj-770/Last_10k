@@ -76,7 +76,7 @@ export function computeFinancialMetrics(
       if (s.renewalDay < currentDay) return false;
       // Avoid reserving a renewal twice if the user already recorded that exact subscription payment.
       return !transactions.some((t) =>
-        (t.type === 'expense' || (t.type === 'commitment' && t.isPaid)) &&
+        (t.type === 'expense' || t.type === 'commitment') &&
         t.category === 'subscriptions' &&
         t.day === s.renewalDay &&
         t.title.trim().toLocaleLowerCase() === s.name.trim().toLocaleLowerCase()
