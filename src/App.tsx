@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFinance } from './hooks/useFinance';
+import { LandingPage } from './components/LandingPage';
 import { Header } from './components/Header';
 import { CommandCenter } from './components/CommandCenter';
 import { SpendingSimulator } from './components/SpendingSimulator';
@@ -10,6 +11,8 @@ import { StressTestScenarios } from './components/StressTestScenarios';
 import { SavingsGoals } from './components/SavingsGoals';
 import { Toast } from './components/Toast';
 import { Footer } from './components/Footer';
+import type { SimulationProposal } from './types/finance';
+import { formatINR } from './utils/financeEngine';
 
 export function App() {
   const {
@@ -36,11 +39,28 @@ export function App() {
     resetToDemoData,
   } = useFinance();
 
+  // Primary view mode: dedicated editorial landing page or deep financial workspace
+  const [viewMode, setViewMode] = useState<'landing' | 'app'>('landing');
+
   const [activeTab, setActiveTab] = useState<
     'command' | 'simulator' | 'calendar' | 'ledger' | 'subscriptions' | 'stress'
   >('command');
 
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // URL hash sync: #app for deep workspace, #landing or root for landing page
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#app' || window.location.hash.startsWith('#/app')) {
+        setViewMode('app');
+      } else {
+        setViewMode('landing');
+      }
+    };
+    handleHashChange();
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Global Keyboard Shortcuts (e.g. S for Simulator)
   useEffect(() => {
@@ -54,6 +74,7 @@ export function App() {
         return;
       }
       if (e.key === 's' || e.key === 'S') {
+        setViewMode('app');
         setActiveTab('simulator');
       }
     };
@@ -84,9 +105,50 @@ export function App() {
     setToastMessage('Financial ledger JSON successfully exported.');
   };
 
+  const handleLaunchSimulationInApp = (proposal: SimulationProposal) => {
+    simulatePurchase(proposal);
+    setActiveTab('simulator');
+    setViewMode('app');
+    window.location.hash = '#app';
+    setToastMessage(`Preloaded ${formatINR(proposal.amount)} purchase into Decision Simulator.`);
+  };
+
+  const handleEnterApp = () => {
+    setViewMode('app');
+    window.location.hash = '#app';
+  };
+
+  const handleBackToLanding = () => {
+    window.location.hash = '#landing';
+    setViewMode('landing');
+  };
+
+  // If viewing landing page, render dedicated high-end editorial landing experience
+  if (viewMode === 'landing') {
+    return (
+      <div className="animate-in fade-in duration-300">
+        <LandingPage
+          metrics={metrics}
+          currentDay={currentDay}
+          totalDays={totalDays}
+          startingBudget={startingBudget}
+          transactions={transactions}
+          subscriptions={subscriptions}
+          savingsGoals={savingsGoals}
+          onEnterApp={handleEnterApp}
+          onLaunchSimulationInApp={handleLaunchSimulationInApp}
+          onResetDemoData={resetToDemoData}
+          onExportJson={handleExportJson}
+        />
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      </div>
+    );
+  }
+
+  // Active Financial Application Workspace
   return (
-    <div className="min-h-screen flex flex-col bg-[#fbfaf7] text-[#12141a]">
-      {/* Header */}
+    <div className="min-h-screen flex flex-col bg-[#fbfaf7] text-[#12141a] animate-in fade-in duration-300">
+      {/* Header with quick back to Landing toggle */}
       <Header
         currentDay={currentDay}
         totalDays={totalDays}
@@ -97,6 +159,7 @@ export function App() {
         setActiveTab={setActiveTab}
         onOpenQuickSimulate={() => setActiveTab('simulator')}
         onResetDemoData={resetToDemoData}
+        onBackToLanding={handleBackToLanding}
       />
 
       {/* Main Content Area */}

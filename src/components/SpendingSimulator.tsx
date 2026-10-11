@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type {
   SimulationProposal,
   SimulationResult,
@@ -22,6 +22,7 @@ import {
   ShieldAlert,
   ArrowDownRight,
   Info,
+  Sliders,
 } from 'lucide-react';
 
 interface SpendingSimulatorProps {
@@ -65,25 +66,12 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
     setAmount(p.amount);
     setCategory(p.category);
     setIsEssential(p.essential);
-    onSimulate({
-      title: p.title,
-      amount: p.amount,
-      category: p.category,
-      day,
-      isEssential: p.essential,
-    });
   };
 
   const handleTriggerSimulate = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!amount || amount <= 0) {
-      alert('Please enter a valid amount.');
-      return;
-    }
-    if (!title.trim()) {
-      alert('Please enter an item or expense name.');
-      return;
-    }
+    if (!amount || amount <= 0) return;
+    if (!title.trim()) return;
 
     onSimulate({
       title: title.trim(),
@@ -104,18 +92,18 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
     onShowToast('Simulation cancelled. Ledger untouched.');
   };
 
-  // Run initial simulation preview if not set
-  React.useEffect(() => {
-    if (!activeResult) {
+  // Immediate real-time reactive calculation as slider or fields change
+  useEffect(() => {
+    if (amount > 0 && title.trim()) {
       onSimulate({
-        title,
-        amount,
+        title: title.trim(),
+        amount: Math.abs(amount),
         category,
         day,
         isEssential,
       });
     }
-  }, []);
+  }, [amount, title, category, day, isEssential]);
 
   return (
     <div className="space-y-6">
@@ -130,7 +118,7 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
             See the future before you spend.
           </h2>
           <p className="text-sm text-[#5a6272] leading-relaxed">
-            Test any purchase before committing. Our central calculation engine projects the exact domino effect on your cash balance, your remaining safe daily allowance, and your month-end survival runway.
+            Test any purchase before committing. Move the responsive amount slider below to immediately watch the consequence matrix update before a single rupee leaves your hands.
           </p>
         </div>
 
@@ -159,7 +147,7 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
                 1. Proposed Purchase
               </h3>
               <span className="text-xs font-mono text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                Live Modeling
+                Live Reactive Modeling
               </span>
             </div>
 
@@ -182,6 +170,42 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
                     className="w-full bg-[#fbfaf7] border border-[#d6d2c4] rounded-xl pl-9 pr-4 py-3 text-2xl sm:text-3xl font-heading font-black text-[#12141a] focus:bg-white focus:border-[#12141a] focus:outline-none transition-colors"
                     required
                   />
+                </div>
+
+                {/* Real-Time Responsive Slider */}
+                <div className="mt-3 p-3 bg-[#fbfaf7] border border-[#e8e5dc] rounded-xl space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[#64748b]">
+                    <span className="flex items-center gap-1.5">
+                      <Sliders className="w-3 h-3 text-[#12141a]" />
+                      <span>Drag Amount Slider</span>
+                    </span>
+                    <span className="font-bold text-[#12141a]">{formatINR(amount)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="50"
+                    max={Math.max(4000, metrics.spendableBalance)}
+                    step="25"
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                    className="w-full accent-[#12141a] cursor-pointer h-2 bg-[#ede9df] rounded-lg"
+                  />
+                  <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                    {[250, 500, 1000, 1500, 2200, 3000].map((quickAmt) => (
+                      <button
+                        key={quickAmt}
+                        type="button"
+                        onClick={() => setAmount(quickAmt)}
+                        className={`px-2 py-0.5 text-[10px] font-mono rounded-md border transition-colors cursor-pointer ${
+                          amount === quickAmt
+                            ? 'bg-[#12141a] text-[#ccff00] border-[#12141a]'
+                            : 'bg-white text-[#5a6272] border-[#ede9df] hover:border-[#12141a]/30'
+                        }`}
+                      >
+                        ₹{quickAmt}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -257,14 +281,6 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
                   {isEssential ? 'ESSENTIAL' : 'DISCRETIONARY'}
                 </button>
               </div>
-
-              <button
-                type="submit"
-                className="w-full py-2.5 bg-[#12141a] hover:bg-black text-[#ccff00] font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs mt-2"
-              >
-                <Zap className="w-4 h-4 fill-[#ccff00]" />
-                <span>Re-calculate Consequences</span>
-              </button>
             </form>
           </div>
 
@@ -340,6 +356,34 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
                   </div>
                 </div>
 
+                {/* Comparative Visual Forecast Bar */}
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-mono text-[#a3adc2]">
+                    <span>Capital Preservation Trajectory</span>
+                    <span className="text-white">
+                      Baseline: {formatINR(activeResult.forecastBefore)} &rarr; Simulated: {formatINR(activeResult.forecastAfter)}
+                    </span>
+                  </div>
+                  <div className="w-full bg-white/10 h-2.5 rounded-full overflow-hidden flex">
+                    <div
+                      className="bg-emerald-500 h-full transition-all duration-300"
+                      style={{
+                        width: `${Math.max(0, Math.min(100, (activeResult.forecastAfter / 10000) * 100))}%`,
+                      }}
+                    />
+                    <div
+                      className="bg-rose-500/80 h-full transition-all duration-300"
+                      style={{
+                        width: `${Math.max(0, Math.min(100, (activeResult.proposal.amount / 10000) * 100))}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-[#717b8f] font-mono">
+                    <span className="text-emerald-400">Green = Remaining buffer</span>
+                    <span className="text-rose-400">Red = Consumed by this purchase</span>
+                  </div>
+                </div>
+
                 {/* Risk Trajectory Banner */}
                 <div
                   className={`p-4 rounded-xl border text-xs ${
@@ -374,10 +418,17 @@ export const SpendingSimulator: React.FC<SpendingSimulatorProps> = ({
                     {activeResult.alternatives.map((alt) => (
                       <div
                         key={alt.id}
-                        className="p-3.5 bg-white/5 border border-white/10 rounded-xl hover:border-white/20 transition-colors text-xs"
+                        onClick={() => {
+                          if (alt.id === 'budget_alternative') {
+                            setAmount(alt.amount);
+                          } else if (alt.id === 'delay_purchase') {
+                            setDay(26);
+                          }
+                        }}
+                        className="p-3.5 bg-white/5 border border-white/10 rounded-xl hover:border-white/30 transition-colors text-xs cursor-pointer group"
                       >
                         <div className="flex items-center justify-between font-bold mb-1">
-                          <span className="text-white">{alt.title}</span>
+                          <span className="text-white group-hover:text-[#ccff00] transition-colors">{alt.title}</span>
                           <span className="text-[#ccff00] font-mono text-sm">{formatINR(alt.amount)}</span>
                         </div>
                         <p className="text-xs text-[#a3adc2] mb-2 leading-relaxed">{alt.description}</p>

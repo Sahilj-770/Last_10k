@@ -21,6 +21,7 @@ interface HeaderProps {
   setActiveTab: (tab: 'command' | 'simulator' | 'calendar' | 'ledger' | 'subscriptions' | 'stress') => void;
   onOpenQuickSimulate: () => void;
   onResetDemoData: () => void;
+  onBackToLanding?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,6 +34,7 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   onOpenQuickSimulate,
   onResetDemoData,
+  onBackToLanding,
 }) => {
   const [timeStr, setTimeStr] = useState('');
   const remainingDays = Math.max(1, totalDays - currentDay + 1);
@@ -138,6 +140,16 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Live Metrics Snippet & Simulation CTA */}
         <div className="flex items-center gap-3">
+          {onBackToLanding && (
+            <button
+              onClick={onBackToLanding}
+              className="text-xs font-semibold text-[#5a6272] hover:text-[#12141a] px-3 py-2 rounded-lg border border-[#ede9df] hover:border-[#12141a]/30 transition-all flex items-center gap-1.5 cursor-pointer bg-white shadow-xs"
+              title="Return to the Landing Page & Money Runway"
+            >
+              <span>← Manifesto</span>
+            </button>
+          )}
+
           <div className="hidden lg:flex items-center gap-5 bg-white border border-[#e8e5dc] rounded-lg px-4 py-2 shadow-xs text-xs">
             <div>
               <div className="text-[10px] text-[#64748b] font-medium uppercase tracking-wider">CASH IN HAND</div>
