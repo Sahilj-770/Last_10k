@@ -90,9 +90,8 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
   const center = 180;
   const daysArray = Array.from({ length: totalDays }, (_, i) => i + 1);
 
-  // Active inspected day (hovered, or current animated day)
-  const inspectedDay = hoveredDay !== null ? hoveredDay : currentDay;
-
+  // Hovering a day only highlights its marker. The central figures are current-day metrics,
+  // so keep their label tied to currentDay rather than implying a historical/future recalculation.
   // Proportional balance simulation for the active inspected day
   // The inner ring represents spendable cash as a share of the original budget.
   // Clamp the ratio so SVG dash lengths never become negative or exceed a full ring.
@@ -154,7 +153,7 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
             const isToday = d === currentDay;
             const isAnimatedActive = d <= animatedDay;
             const isMilestone = milestoneDays[d] !== undefined;
-            const isSelected = inspectedDay === d;
+            const isSelected = hoveredDay === d || (hoveredDay === null && d === currentDay);
 
             return (
               <g
@@ -302,7 +301,7 @@ export const MoneyRunway: React.FC<MoneyRunwayProps> = ({
               fill="#64748b"
               letterSpacing="0.1em"
             >
-              DAY {inspectedDay} OF {totalDays} &bull; {inspectedDay === currentDay ? 'TODAY' : inspectedDay < currentDay ? 'PAST' : 'FUTURE'}
+              DAY {currentDay} OF {totalDays} &bull; TODAY
             </text>
 
             {/* Rupee Symbol Mark */}
