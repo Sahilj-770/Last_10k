@@ -68,15 +68,31 @@ export function computeFinancialMetrics(
     .filter((t) => t.type === 'commitment' && !t.isPaid)
     .reduce((sum, t) => sum + t.amount, 0);
 
-  // 5. Total Active Subscriptions cost (upcoming this month)
+  // 5. Active subscriptions and renewals still due in this budget cycle.
   const activeSubs = subscriptions.filter((s) => s.isActive);
   const totalActiveSubscriptions = activeSubs.reduce((sum, s) => sum + s.amount, 0);
+  const upcomingSubscriptionCost = activeSubs
+    .filter((s) => {
+      if (s.renewalDay < currentDay) return false;
+      // Avoid reserving a renewal twice if the user already recorded that exact subscription payment.
+      return !transactions.some((t) =>
+        (t.type === 'expense' || (t.type === 'commitment' && t.isPaid)) &&
+        t.category === 'subscriptions' &&
+        t.day === s.renewalDay &&
+        t.title.trim().toLocaleLowerCase() === s.name.trim().toLocaleLowerCase()
+      );
+    })
+    .reduce((sum, s) => sum + s.amount, 0);
 
-  // 6. Savings locked in goals
+  // 6. Savings locked in goals are earmarked cash, not free-to-spend cash.
   const totalSavingsAllocated = savingsGoals.reduce((sum, g) => sum + g.currentAmount, 0);
 
-  // 7. Spendable Balance: Cash minus unpaid commitments
-  const spendableBalance = Math.max(0, currentCashBalance - totalUnpaidCommitments);
+  // 7. True spendable balance excludes unpaid bills, upcoming active renewals, and locked savings.
+  // Keep currentCashBalance as the actual cash balance; these are allocations within that cash.
+  const spendableBalance = Math.max(
+    0,
+    currentCashBalance - totalUnpaidCommitments - upcomingSubscriptionCost - totalSavingsAllocated
+  );
 
   // 8. Remaining Days in cycle (e.g., if Day 12 of 30, remaining = 30 - 12 + 1 = 19 days)
   const remainingDays = Math.max(1, totalDays - currentDay + 1);
@@ -96,7 +112,12 @@ export function computeFinancialMetrics(
 
   // Projected remaining discretionary spend
   const projectedFutureDiscretionary = Math.round(avgPastDailyPace * remainingDays);
-  const forecastedMonthEndBalance = currentCashBalance - totalUnpaidCommitments - projectedFutureDiscretionary;
+  const forecastedMonthEndBalance =
+    currentCashBalance -
+    totalUnpaidCommitments -
+    upcomingSubscriptionCost -
+    totalSavingsAllocated -
+    projectedFutureDiscretionary;
 
   // 11. Risk Analysis Engine
   const risk = evaluateRisk(
@@ -119,6 +140,7 @@ export function computeFinancialMetrics(
     safeDailyAllowance,
     forecastedMonthEndBalance,
     totalActiveSubscriptions,
+    upcomingSubscriptionCost,
     totalSavingsAllocated,
     risk,
   };
