@@ -40,10 +40,12 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
   onNavigateTab,
 }) => {
   const remainingDays = metrics.remainingDays;
-  const spentPercent = Math.round((metrics.totalPaidExpenses / metrics.startingBudget) * 100);
-  const committedPercent = Math.round((metrics.totalUnpaidCommitments / metrics.startingBudget) * 100);
-  const spendablePercent = Math.round((metrics.spendableBalance / metrics.startingBudget) * 100);
-  const savingsPercent = Math.round((metrics.totalSavingsAllocated / metrics.startingBudget) * 100);
+  const budgetResources = Math.max(1, metrics.startingBudget + metrics.totalIncome);
+  const spentPercent = Math.round((metrics.totalPaidExpenses / budgetResources) * 100);
+  const committedPercent = Math.round((metrics.totalUnpaidCommitments / budgetResources) * 100);
+  const subscriptionsPercent = Math.round((metrics.upcomingSubscriptionCost / budgetResources) * 100);
+  const spendablePercent = Math.round((metrics.spendableBalance / budgetResources) * 100);
+  const savingsPercent = Math.round((metrics.totalSavingsAllocated / budgetResources) * 100);
 
   const riskBadge = {
     STABLE: {
@@ -150,14 +152,14 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
           {/* True Spendable Cash */}
           <div className="bg-white/5 border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between text-xs text-[#a3adc2] font-mono mb-1">
-              <span>SPENDABLE (AFTER BILLS)</span>
+              <span>FREE TO SPEND</span>
               <Lock className="w-3.5 h-3.5 text-cyan-400" />
             </div>
             <div className="text-2xl sm:text-3xl font-heading font-black text-cyan-300">
               {formatINR(metrics.spendableBalance)}
             </div>
             <div className="text-[11px] text-[#a3adc2] mt-1">
-              Reserved: -{formatINR(metrics.totalUnpaidCommitments)} for mandatory bills
+              After {formatINR(metrics.totalUnpaidCommitments)} bills, {formatINR(metrics.upcomingSubscriptionCost)} renewals & {formatINR(metrics.totalSavingsAllocated)} saved
             </div>
           </div>
 
@@ -185,7 +187,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
               ₹10,000 Budget Capital Allocation
             </h3>
             <p className="text-xs text-[#64748b]">
-              Every single rupee reconciled deterministically from your actual ledger.
+              Each rupee sits in one bucket. Free cash excludes bills, renewals, and locked savings.
             </p>
           </div>
           <div className="text-xs font-mono text-[#12141a] font-semibold bg-[#f6f4ee] px-3 py-1.5 rounded-md border border-[#e8e5dc] self-start sm:self-auto">
@@ -207,13 +209,19 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
             style={{ width: `${committedPercent}%` }}
             title={`Reserved Bills: ${formatINR(metrics.totalUnpaidCommitments)} (${committedPercent}%)`}
           />
-          {/* 3. Spendable Free Cash */}
+          {/* 3. Upcoming subscription renewals */}
+          <div
+            className="bg-[#0ea5e9] transition-all duration-300"
+            style={{ width: `${subscriptionsPercent}%` }}
+            title={`Upcoming Subscriptions: ${formatINR(metrics.upcomingSubscriptionCost)} (${subscriptionsPercent}%)`}
+          />
+          {/* 4. Spendable Free Cash */}
           <div
             className="bg-[#10b981] transition-all duration-300"
             style={{ width: `${spendablePercent}%` }}
-            title={`Spendable Cash: ${formatINR(metrics.spendableBalance)} (${spendablePercent}%)`}
+            title={`Free-to-spend cash: ${formatINR(metrics.spendableBalance)} (${spendablePercent}%)`}
           />
-          {/* 4. Locked in savings */}
+          {/* 5. Locked in savings */}
           <div
             className="bg-[#059669] transition-all duration-300"
             style={{ width: `${savingsPercent}%` }}
@@ -222,7 +230,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
         </div>
 
         {/* Detailed Explanation Cards Below Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 pt-3">
           {/* Card 1: Spent */}
           <div className="bg-[#fcfbf9] border border-[#ede9df] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
@@ -251,7 +259,21 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
             </div>
           </div>
 
-          {/* Card 3: Free Spendable */}
+          {/* Card 3: Upcoming subscriptions */}
+          <div className="bg-sky-50 border border-sky-200 rounded-xl p-4">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-3 h-3 rounded-xs bg-sky-500" />
+              <span className="font-mono text-xs text-sky-800 uppercase font-semibold">Upcoming Renewals</span>
+            </div>
+            <div className="text-xl font-heading font-black text-sky-900">
+              {formatINR(metrics.upcomingSubscriptionCost)}
+            </div>
+            <div className="text-xs text-sky-700 mt-1">
+              Active subscriptions due this cycle
+            </div>
+          </div>
+
+          {/* Card 4: Free Spendable */}
           <div className="bg-[#ecfdf5] border border-[#a7f3d0] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="w-3 h-3 rounded-xs bg-[#10b981]" />
@@ -265,7 +287,7 @@ export const CommandCenter: React.FC<CommandCenterProps> = ({
             </div>
           </div>
 
-          {/* Card 4: Savings */}
+          {/* Card 5: Savings */}
           <div className="bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-1.5">
               <span className="w-3 h-3 rounded-xs bg-[#059669]" />
