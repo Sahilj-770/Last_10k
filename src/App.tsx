@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFinance } from './hooks/useFinance';
+import { useTheme } from './hooks/useTheme';
 import { LandingPage } from './components/LandingPage';
 import { Header } from './components/Header';
 import { CommandCenter } from './components/CommandCenter';
@@ -38,6 +39,9 @@ export function App() {
     contributeToSavingsGoal,
     resetToDemoData,
   } = useFinance();
+
+  // Theme hook (dark/light mode)
+  const { theme, toggleTheme } = useTheme();
 
   // Primary view mode: dedicated editorial landing page or deep financial workspace
   const [viewMode, setViewMode] = useState<'landing' | 'app'>('landing');
@@ -139,6 +143,8 @@ export function App() {
           onLaunchSimulationInApp={handleLaunchSimulationInApp}
           onResetDemoData={resetToDemoData}
           onExportJson={handleExportJson}
+          theme={theme}
+          toggleTheme={toggleTheme}
         />
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       </div>
@@ -147,7 +153,7 @@ export function App() {
 
   // Active Financial Application Workspace
   return (
-    <div className="min-h-screen flex flex-col bg-[#fbfaf7] text-[#12141a] animate-in fade-in duration-300">
+    <div className="min-h-screen flex flex-col bg-[#fbfaf7] dark:bg-[#0a0b10] text-[#12141a] dark:text-[#faf8f5] transition-colors duration-300 animate-in fade-in">
       {/* Header with quick back to Landing toggle */}
       <Header
         currentDay={currentDay}
@@ -160,6 +166,8 @@ export function App() {
         onOpenQuickSimulate={() => setActiveTab('simulator')}
         onResetDemoData={resetToDemoData}
         onBackToLanding={handleBackToLanding}
+        theme={theme}
+        toggleTheme={toggleTheme}
       />
 
       {/* Main Content Area */}

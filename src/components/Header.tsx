@@ -8,6 +8,8 @@ import {
   TrendingDown,
   RotateCcw,
   Sparkles,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { formatINR } from '../utils/financeEngine';
 
@@ -22,6 +24,8 @@ interface HeaderProps {
   onOpenQuickSimulate: () => void;
   onResetDemoData: () => void;
   onBackToLanding?: () => void;
+  theme?: 'dark' | 'light';
+  toggleTheme?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -35,6 +39,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenQuickSimulate,
   onResetDemoData,
   onBackToLanding,
+  theme = 'dark',
+  toggleTheme,
 }) => {
   const [timeStr, setTimeStr] = useState('');
   const remainingDays = Math.max(1, totalDays - currentDay + 1);
@@ -140,6 +146,21 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Live Metrics Snippet & Simulation CTA */}
         <div className="flex items-center gap-3">
+          {toggleTheme && (
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg border border-[#ede9df] hover:border-[#12141a]/40 bg-white text-[#12141a] transition-all cursor-pointer shadow-xs flex items-center justify-center"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-[#ccff00]" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#12141a]" />
+              )}
+            </button>
+          )}
+
           {onBackToLanding && (
             <button
               onClick={onBackToLanding}

@@ -2,12 +2,13 @@
 
 @layer base {
   :root {
-    /* Premium Editorial Fintech Palette (Warm Ivory & Near-Black) */
+    /* Base default (Light Mode - Warm Ivory & Near-Black) */
     --bg-page: #fbfaf7;
     --bg-card: #ffffff;
     --bg-card-subtle: #f6f4ee;
-    --bg-dark-hero: #121418;
-    --bg-dark-card: #181b22;
+    --bg-card-hover: #f1eee4;
+    --bg-dark-hero: #0e1017;
+    --bg-dark-card: #151821;
     --bg-input: #ffffff;
 
     --border-subtle: #e8e5dc;
@@ -47,6 +48,34 @@
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
   }
 
+  html.dark {
+    /* Dark Mode (Deep Graphite & Obsidian with Acid-Lime) */
+    --bg-page: #0a0b10;
+    --bg-card: #12151f;
+    --bg-card-subtle: #171b28;
+    --bg-card-hover: #1e2334;
+    --bg-dark-hero: #07080c;
+    --bg-dark-card: #0f121a;
+    --bg-input: #151822;
+
+    --border-subtle: #232838;
+    --border-medium: #333a4f;
+    --border-dark: #47506a;
+
+    /* Typography */
+    --text-primary: #faf8f5;
+    --text-secondary: #9aa4b8;
+    --text-muted: #647087;
+    --text-on-dark: #faf8f5;
+    --text-on-dark-muted: #a3adc2;
+
+    /* Accents in dark */
+    --lime-accent: #ccff00;
+    --emerald-green: #10b981;
+    --emerald-subtle: rgba(16, 185, 129, 0.12);
+    --emerald-border: rgba(16, 185, 129, 0.3);
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -62,6 +91,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   body {
@@ -72,6 +102,12 @@
       radial-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px);
     background-size: 24px 24px;
     background-position: center top;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html.dark body {
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
   }
 
   /* Headings */
@@ -106,8 +142,44 @@
   background: #d4cfbe;
   border-radius: 9999px;
 }
+html.dark ::-webkit-scrollbar-thumb {
+  background: #333a4f;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a291;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #47506a;
+}
+
+/* Theme Adaptation Helpers for existing cards */
+html.dark .bg-\[\#fbfaf7\] {
+  background-color: var(--bg-page) !important;
+}
+html.dark .bg-\[\#f5f3ec\] {
+  background-color: var(--bg-card-subtle) !important;
+}
+html.dark .bg-white {
+  background-color: var(--bg-card) !important;
+}
+html.dark .text-\[\#12141a\] {
+  color: var(--text-primary) !important;
+}
+html.dark .text-\[\#5a6272\],
+html.dark .text-\[\#64748b\] {
+  color: var(--text-secondary) !important;
+}
+html.dark .text-\[\#717b8f\],
+html.dark .text-\[\#8c95a6\] {
+  color: var(--text-muted) !important;
+}
+html.dark .border-\[\#e8e5dc\],
+html.dark .border-\[\#ede9df\],
+html.dark .border-\[\#d6d0c2\] {
+  border-color: var(--border-subtle) !important;
+}
+html.dark .border-\[\#d6d2c4\] {
+  border-color: var(--border-medium) !important;
 }
 
 /* Focus styles */
@@ -116,12 +188,12 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--text-primary);
+  outline: 2px solid var(--lime-accent);
   outline-offset: 2px;
 }
 
 /* Modal backdrop */
 .modal-backdrop {
-  background-color: rgba(18, 20, 26, 0.65);
+  background-color: rgba(10, 11, 16, 0.75);
   backdrop-filter: blur(8px);
 }
