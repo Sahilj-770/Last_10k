@@ -152,37 +152,218 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   background: #47506a;
 }
 
-/* Theme Adaptation Helpers for existing cards */
-html.dark .bg-\[\#fbfaf7\] {
-  background-color: var(--bg-page) !important;
-}
-html.dark .bg-\[\#f5f3ec\] {
-  background-color: var(--bg-card-subtle) !important;
-}
+/* ============================================================
+   DARK MODE — Comprehensive theme overrides.
+   Covers all hardcoded light-mode Tailwind color patterns
+   used across Header, CommandCenter, SpendingSimulator,
+   ExpenseTracker, SavingsGoals, SurvivalCalendar,
+   SubscriptionLeakDetector, StressTestScenarios, MoneyRunway.
+   ============================================================ */
+
+/* --- Card / surface backgrounds --- */
 html.dark .bg-white {
   background-color: var(--bg-card) !important;
 }
+
+html.dark .bg-\[\#fbfaf7\],
+html.dark .bg-\[\#f8f7f2\],
+html.dark .bg-\[\#fcfbf9\] {
+  background-color: var(--bg-page) !important;
+}
+
+html.dark .bg-\[\#f6f4ee\],
+html.dark .bg-\[\#f5f3ec\],
+html.dark .bg-\[\#f1eee4\] {
+  background-color: var(--bg-card-subtle) !important;
+}
+
+/* --- Dividers / thin line backgrounds --- */
+html.dark .bg-\[\#e8e5dc\],
+html.dark .bg-\[\#ede9df\] {
+  background-color: var(--border-subtle) !important;
+}
+
+/* --- Progress bar tracks --- */
+html.dark .bg-\[\#ede9df\] {
+  background-color: var(--bg-card-hover) !important;
+}
+html.dark .bg-\[\#cbd5e1\] {
+  background-color: var(--border-medium) !important;
+}
+
+/* --- Text colors --- */
 html.dark .text-\[\#12141a\] {
   color: var(--text-primary) !important;
 }
 html.dark .text-\[\#5a6272\],
-html.dark .text-\[\#64748b\] {
+html.dark .text-\[\#64748b\],
+html.dark .text-\[\#475569\] {
   color: var(--text-secondary) !important;
 }
 html.dark .text-\[\#717b8f\],
 html.dark .text-\[\#8c95a6\] {
   color: var(--text-muted) !important;
 }
+
+/* --- Border colors --- */
 html.dark .border-\[\#e8e5dc\],
 html.dark .border-\[\#ede9df\],
-html.dark .border-\[\#d6d0c2\] {
+html.dark .border-\[\#d6d0c2\],
+html.dark .border-\[\#e0ddd3\] {
   border-color: var(--border-subtle) !important;
 }
-html.dark .border-\[\#d6d2c4\] {
+html.dark .border-\[\#d6d2c4\],
+html.dark .border-\[\#c8c4b8\] {
   border-color: var(--border-medium) !important;
 }
 
-/* Focus styles */
+/* --- Hover states --- */
+html.dark .hover\:bg-\[\#ede9df\]:hover {
+  background-color: var(--bg-card-hover) !important;
+}
+html.dark .hover\:bg-white:hover {
+  background-color: var(--bg-card-hover) !important;
+}
+
+/* --- Input / form elements --- */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-medium) !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  background-color: var(--bg-card) !important;
+  border-color: var(--text-primary) !important;
+}
+html.dark input[type="range"] {
+  background-color: var(--bg-card-hover) !important;
+}
+
+/* --- Header specific --- */
+html.dark header {
+  background-color: color-mix(in srgb, var(--bg-card) 97%, transparent) !important;
+  border-color: var(--border-subtle) !important;
+}
+/* Telemetry strip */
+html.dark header > div:first-child {
+  background-color: var(--bg-card-subtle) !important;
+  border-color: var(--border-subtle) !important;
+}
+/* Theme toggle + back-to-landing buttons */
+html.dark header button.border {
+  background-color: var(--bg-card-hover) !important;
+  border-color: var(--border-medium) !important;
+  color: var(--text-primary) !important;
+}
+/* Metrics snippet panel */
+html.dark .hidden.lg\:flex.items-center.gap-5.bg-white {
+  background-color: var(--bg-card-hover) !important;
+  border-color: var(--border-subtle) !important;
+}
+/* Active nav tab — was bg-white in light mode */
+html.dark nav button.border-b-2.border-\[\#12141a\] {
+  background-color: var(--bg-card-subtle) !important;
+  color: var(--text-primary) !important;
+}
+
+/* --- MoneyRunway SVG-adjacent white containers --- */
+html.dark .bg-white.p-2.rounded-xl {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* View detail button on MoneyRunway */
+html.dark .bg-white\/90 {
+  background-color: rgba(18, 21, 31, 0.92) !important;
+  color: var(--text-primary) !important;
+}
+
+/* --- SurvivalCalendar day cells --- */
+html.dark .border-\[\#12141a\].bg-white.shadow-md {
+  background-color: var(--bg-card-subtle) !important;
+}
+html.dark .border-\[\#f0ece1\] {
+  border-color: var(--border-subtle) !important;
+}
+
+/* --- Highlighted / active tab in nav --- */
+html.dark nav .bg-white {
+  background-color: var(--bg-card-subtle) !important;
+}
+
+/* --- Modal dialogs --- */
+html.dark [role="dialog"],
+html.dark .modal-content {
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-subtle) !important;
+}
+
+/* --- Amber / warning subtle backgrounds (keep tinted but darken) --- */
+html.dark .bg-\[\#fffbeb\] {
+  background-color: rgba(217, 119, 6, 0.12) !important;
+}
+html.dark .border-\[\#fde68a\] {
+  border-color: rgba(217, 119, 6, 0.35) !important;
+}
+
+/* --- Sky subtle backgrounds --- */
+html.dark .bg-sky-50 {
+  background-color: rgba(2, 132, 199, 0.12) !important;
+}
+html.dark .border-sky-200 {
+  border-color: rgba(2, 132, 199, 0.35) !important;
+}
+
+/* --- Emerald subtle backgrounds --- */
+html.dark .bg-\[\#ecfdf5\],
+html.dark .bg-\[\#f0fdf4\] {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+html.dark .border-\[\#a7f3d0\],
+html.dark .border-\[\#bbf7d0\] {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+html.dark .text-emerald-900 {
+  color: #6ee7b7 !important;
+}
+html.dark .text-emerald-800 {
+  color: #34d399 !important;
+}
+html.dark .text-emerald-700 {
+  color: #6ee7b7 !important;
+}
+html.dark .bg-emerald-50 {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+}
+html.dark .border-emerald-200,
+html.dark .border-emerald-300 {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* --- Amber text in dark --- */
+html.dark .text-amber-900,
+html.dark .text-amber-800 {
+  color: #fcd34d !important;
+}
+html.dark .text-amber-700 {
+  color: #fde68a !important;
+}
+html.dark .bg-amber-50 {
+  background-color: rgba(217, 119, 6, 0.12) !important;
+}
+html.dark .border-amber-200 {
+  border-color: rgba(217, 119, 6, 0.35) !important;
+}
+
+/* --- Focus styles --- */
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
@@ -192,7 +373,7 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-/* Modal backdrop */
+/* --- Modal backdrop --- */
 .modal-backdrop {
   background-color: rgba(10, 11, 16, 0.75);
   backdrop-filter: blur(8px);
